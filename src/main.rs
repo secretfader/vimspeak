@@ -1,20 +1,22 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
-#![allow(unused)]
-use cpal::traits::{DeviceTrait, HostTrait};
-use deepspeech::{Metadata, Model};
+mod speak;
+use structopt::StructOpt;
 
-fn main() {
-    let host = cpal::default_host();
+fn main() -> Result<(), speak::Error> {
+    let c: speak::Config = confy::load("vimspeak").map_err(|_| speak::Error::NoConfig)?;
+    match CLI::from_args() {
+        CLI::Install => speak::install(&c),
+        CLI::Run => speak::run(&c),
+    }
+}
 
-    let device = host
-        .default_input_device()
-        .expect("Unable to get default input device");
-
-    let config = device
-        .default_input_config()
-        .expect("Unable to get default config for input device");
-
-    println!("Hello, world!");
+/// an experiment in hands-free editing
+#[derive(StructOpt)]
+enum CLI {
+    /// Create required configuration
+    Install,
+    /// Run speech-to-text
+    Run,
 }

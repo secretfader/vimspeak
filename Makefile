@@ -31,4 +31,7 @@ build: setup models lib
 test: setup models lib
 	@LIBRARY_PATH=$(shell pwd)/deps cargo test --all 
 
-.PHONY: clean setup lib models build test
+run: build
+	LD_LIBRARY_PATH=$(shell pwd)/deps VIMSPEAK_MODEL_PATH=$(shell pwd)/deps/deepspeech-$(DS_VERSION)-models ./target/debug/speakvim
+
+.PHONY: clean setup lib models build test run
