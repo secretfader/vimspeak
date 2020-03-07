@@ -1,4 +1,4 @@
-# Speak to Vim
+# VimSpeak
 
 An experiment in hands-free editing, aiming to make the craft of software engineering more accessible.
 
@@ -19,6 +19,11 @@ Unfortunately, project requirements make running `cargo` standalone a bit more c
 ## Why Vim?
 
 At the core, Vim's modes and key commands are essentially a grammar for communicating with your editor.
+
+## Inspired By
+
+* [Tavis Rudd's talk on voice control for Emacs](https://www.youtube.com/watch?v=8SkdfdXWYaI)
+* [AshleyF's original VimSpeak implementation in F#](https://github.com/AshleyF/VimSpeak)
 
 ## License
 
