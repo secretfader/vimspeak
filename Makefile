@@ -1,7 +1,11 @@
-DS_VERSION="0.6.1"
-ARCH="amd64"
-PLATFORM="cpu"
-OS="linux"
+DS_VERSION=0.6.1
+ARCH=amd64
+PLATFORM=cpu
+ifeq ($(shell uname -s),Darwin)
+	OS=mac
+else
+	OS=linux
+endif
 
 all: $(TARGET) clean build 
 
