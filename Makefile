@@ -1,7 +1,11 @@
-DS_VERSION="0.6.1"
-ARCH="amd64"
-PLATFORM="cpu"
-OS="linux"
+DS_VERSION=0.6.1
+ARCH=amd64
+PLATFORM=cpu
+ifeq ($(shell uname -s),Darwin)
+	OS=mac
+else
+	OS=linux
+endif
 
 all: $(TARGET) clean build 
 
@@ -11,12 +15,23 @@ clean:
 setup:
 	@mkdir -p deps/
 
-deps: setup
+models:
+	@wget -q -nc -O deps/models.tar.gz \
+		https://github.com/mozilla/DeepSpeech/releases/download/v$(DS_VERSION)/deepspeech-$(DS_VERSION)-models.tar.gz; \
+		tar -xzf deps/models.tar.gz -C deps/
+
+lib:
 	@wget -q -nc -O deps/client.tar.xz \
 		https://github.com/mozilla/DeepSpeech/releases/download/v$(DS_VERSION)/native_client.$(ARCH).$(PLATFORM).$(OS).tar.xz; \
 	tar -xf deps/client.tar.xz -C deps/
 
-build: deps
-	@LIBRARY_PATH=$(shell pwd)/deps cargo build
+build: setup models lib
+	@LIBRARY_PATH=$(shell pwd)/deps cargo build --verbose
 
-.PHONY: clean setup deps build
+test: setup models lib
+	@LIBRARY_PATH=$(shell pwd)/deps cargo test --all 
+
+run: build
+	LD_LIBRARY_PATH=$(shell pwd)/deps VIMSPEAK_MODEL_PATH=$(shell pwd)/deps/deepspeech-$(DS_VERSION)-models ./target/debug/speakvim
+
+.PHONY: clean setup lib models build test run
